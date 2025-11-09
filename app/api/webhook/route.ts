@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (touchedProjects) {
-        revalidateTag("projects");
+        revalidateTag("projects", "/");
         console.log("Revalidated projects tag");
       }
     }
