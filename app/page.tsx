@@ -2,7 +2,8 @@ import { loadAllProjects } from "@/lib/projects";
 import { ProjectGrid } from "@/components/ProjectGrid";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BreadcrumbSchema } from "@/components/BreadcrumbSchema";
-import { Github, FileCode, Map, Radar, Plus } from "lucide-react";
+import { TricolorRadar } from "@/components/TricolorRadar";
+import { Github, FileCode, Map, Plus } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -63,7 +64,7 @@ export default function Home() {
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 sm:gap-3">
-                <Radar className="h-8 w-8 sm:h-10 sm:w-10 text-gray-900 dark:text-gray-100 flex-shrink-0" />
+                <TricolorRadar className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0" />
                 <h1 className="text-3xl sm:text-4xl text-gray-900 dark:text-gray-100 tracking-wider truncate" style={{ fontFamily: 'var(--font-vt323)' }}>
                   fossradar
                 </h1>

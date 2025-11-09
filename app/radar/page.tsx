@@ -1,7 +1,8 @@
 import { loadAllProjects } from "@/lib/projects";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BreadcrumbSchema } from "@/components/BreadcrumbSchema";
-import { Github, MapPin, Package, TrendingUp, Building2, Star, ArrowUpRight, FileCode, Map, Radar, Plus } from "lucide-react";
+import { TricolorRadar } from "@/components/TricolorRadar";
+import { Github, MapPin, Package, TrendingUp, Building2, Star, ArrowUpRight, FileCode, Map, Plus } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -85,7 +86,7 @@ export default function RadarPage() {
         <div className="container mx-auto px-4 py-4 sm:py-6">
           <div className="flex items-center justify-between gap-4">
             <Link href="/" className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
-              <Radar className="h-8 w-8 sm:h-10 sm:w-10 text-gray-900 dark:text-gray-100 flex-shrink-0 mt-1" />
+              <TricolorRadar className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 mt-1" />
               <div className="min-w-0">
                 <h1 className="text-3xl sm:text-4xl text-gray-900 dark:text-gray-100 tracking-wider truncate" style={{ fontFamily: 'var(--font-vt323)' }}>
                   fossradar
