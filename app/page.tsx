@@ -3,8 +3,33 @@ import { ProjectGrid } from "@/components/ProjectGrid";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Github, FileCode, Map, Radar } from "lucide-react";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 export const revalidate = 3600; // Revalidate every hour
+
+export const metadata: Metadata = {
+  title: "FOSSRadar.in - Discover Open Source Projects from India",
+  description: "Explore India's vibrant open source ecosystem. Search, filter, and discover FOSS projects by Indian founders, organizations, and contributors. Find projects by location, technology, and domain.",
+  keywords: [
+    "open source india",
+    "foss projects",
+    "indian developers",
+    "github projects india",
+    "open source directory",
+    "indian tech community",
+    "developer projects",
+    "open source contributors"
+  ],
+  openGraph: {
+    title: "FOSSRadar.in - Discover Open Source Projects from India",
+    description: "Explore India's vibrant open source ecosystem. Search and discover FOSS projects by Indian founders and contributors.",
+    url: "https://fossradar.in",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://fossradar.in",
+  },
+};
 
 export default function Home() {
   const projects = loadAllProjects();

@@ -2,8 +2,34 @@ import { loadAllProjects } from "@/lib/projects";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Github, MapPin, Package, TrendingUp, Building2, Star, ArrowUpRight, FileCode, Map, Radar } from "lucide-react";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 export const revalidate = 3600; // Revalidate every hour
+
+export const metadata: Metadata = {
+  title: "Geographic Radar - Explore Projects by Location",
+  description: "Explore open source projects across India by state and city. Interactive analytics dashboard showing project distribution, top states, verified projects, and geographic insights.",
+  keywords: [
+    "open source india map",
+    "projects by state",
+    "indian tech cities",
+    "kolkata projects",
+    "bangalore projects",
+    "mumbai projects",
+    "delhi projects",
+    "geographic distribution",
+    "tech hubs india"
+  ],
+  openGraph: {
+    title: "Geographic Radar - Explore Indian Open Source Projects by Location",
+    description: "Interactive analytics dashboard showing open source project distribution across Indian states and cities.",
+    url: "https://fossradar.in/radar",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://fossradar.in/radar",
+  },
+};
 
 export default function RadarPage() {
   const projects = loadAllProjects();

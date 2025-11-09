@@ -5,8 +5,27 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About - FOSSRadar.in",
-  description: "Learn about FOSSRadar.in, India's comprehensive directory celebrating FOSS projects through their founders, creators, contributors, and community impact.",
-  keywords: ["about", "foss", "open source", "india", "directory", "mission"],
+  description: "Learn about FOSSRadar.in, India's comprehensive directory celebrating FOSS projects through their founders, creators, contributors, and community impact. Built by wbfoss for the Indian open source community.",
+  keywords: [
+    "about fossradar",
+    "foss india",
+    "open source directory",
+    "indian developers",
+    "wbfoss",
+    "open source mission",
+    "git-based directory",
+    "community driven",
+    "transparent platform",
+  ],
+  openGraph: {
+    title: "About FOSSRadar.in - India's Open Source Directory",
+    description: "Learn about our mission to celebrate and showcase India's vibrant FOSS ecosystem through founders, creators, and contributors.",
+    url: "https://fossradar.in/about",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://fossradar.in/about",
+  },
 };
 
 export default function AboutPage() {
