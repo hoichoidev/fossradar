@@ -2,6 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
 import crypto from "crypto";
 
+interface GitHubCommit {
+  added?: string[];
+  modified?: string[];
+  removed?: string[];
+}
+
+interface GitHubWebhookPayload {
+  ref?: string;
+  repository?: {
+    default_branch?: string;
+  };
+  commits?: GitHubCommit[];
+}
+
 function verifySignature(payload: string, signature: string, secret: string): boolean {
   const hmac = crypto.createHmac("sha256", secret);
   const digest = `sha256=${hmac.update(payload).digest("hex")}`;
@@ -28,12 +42,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
-    const payload = JSON.parse(body);
+    const payload = JSON.parse(body) as GitHubWebhookPayload;
 
     // Handle push events
     if (payload.ref === `refs/heads/${payload.repository?.default_branch}`) {
       // Check if commits touched project files
-      const touchedProjects = payload.commits?.some((commit: any) => {
+      const touchedProjects = payload.commits?.some((commit: GitHubCommit) => {
         const files = [
           ...(commit.added || []),
           ...(commit.modified || []),

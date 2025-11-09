@@ -3,7 +3,7 @@
 import fs from "fs";
 import path from "path";
 import { loadAllProjects } from "../lib/projects";
-import { getRepoMetadata, countGoodFirstIssues, hasWbfossTopic, hasVerifiedBadge } from "../lib/github";
+import { getRepoMetadata, countGoodFirstIssues, hasFossradarTopic, hasVerifiedBadge } from "../lib/github";
 
 async function enrichProjects() {
   console.log("🔄 Enriching project data...\n");
@@ -32,7 +32,7 @@ async function enrichProjects() {
         const goodFirstIssues = await countGoodFirstIssues(project.repo);
 
         // Check verification status
-        const hasTopic = await hasWbfossTopic(project.repo);
+        const hasTopic = await hasFossradarTopic(project.repo);
         const hasBadge = await hasVerifiedBadge(project.repo);
         const verified = hasTopic && hasBadge;
 

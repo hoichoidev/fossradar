@@ -23,6 +23,8 @@ async function buildIndex() {
       verified: project.verified || false,
       added_at: project.added_at,
       looking_for_contributors: project.looking_for_contributors || false,
+      location_city: project.location_city,
+      location_indian_state: project.location_indian_state,
     }));
 
     // Sort by name for deterministic output

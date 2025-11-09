@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
-  // Basic rate limiting using headers (best-effort without DB)
-  const ip = request.ip || request.headers.get("x-forwarded-for") || "unknown";
-
+export function middleware(_request: NextRequest) {
   // Add security headers
   const response = NextResponse.next();
 
