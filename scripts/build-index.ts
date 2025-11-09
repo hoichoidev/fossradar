@@ -27,8 +27,12 @@ async function buildIndex() {
       location_indian_state: project.location_indian_state,
     }));
 
-    // Sort by name for deterministic output
-    index.sort((a, b) => a.name.localeCompare(b.name));
+    // Sort: fossradar first, then alphabetically by name
+    index.sort((a, b) => {
+      if (a.slug === "fossradar") return -1;
+      if (b.slug === "fossradar") return 1;
+      return a.name.localeCompare(b.name);
+    });
 
     // Write to public directory
     const outputPath = path.join(process.cwd(), "public", "index.json");

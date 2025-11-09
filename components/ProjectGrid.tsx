@@ -87,6 +87,10 @@ export function ProjectGrid({ initialProjects }: ProjectGridProps) {
 
     // Apply sorting
     results.sort((a, b) => {
+      // Always show fossradar first
+      if (a.slug === "fossradar") return -1;
+      if (b.slug === "fossradar") return 1;
+
       switch (filters.sortBy) {
         case "stars":
           return (b.stars || 0) - (a.stars || 0);
