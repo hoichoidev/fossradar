@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
 import { VT323, Share_Tech, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { Providers } from "@/components/Providers";
 import "./globals.css";
 
 // Font configurations
@@ -165,9 +165,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${vt323.variable} ${shareTech.variable} antialiased font-sans`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <Providers>
           {children}
-        </ThemeProvider>
+        </Providers>
         <Analytics />
         <SpeedInsights />
         <GoogleAnalytics />
