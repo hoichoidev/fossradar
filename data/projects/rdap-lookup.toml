@@ -1,0 +1,22 @@
+slug = "rdap-lookup"
+name = "RDAP Lookup"
+short_desc = "Modern domain intelligence platform with RDAP lookups, SSL/TLS assessment, email security validation, and threat detection"
+repo = "https://github.com/wbfoss/rdap-lookup"
+license = "MIT"
+added_at = "2025-11-09"
+
+website = "https://github.com/wbfoss/rdap-lookup"
+logo = "/logos/rdap-lookup.svg"
+primary_lang = "JavaScript"
+tags = ["web", "security", "devtools", "nextjs", "api"]
+looking_for_contributors = true
+location_city = "Kolkata"
+location_indian_state = "West Bengal"
+
+good_first_issues = 0
+stars = 0
+verified = false
+
+# India Connection
+india_connection = "organization"
+india_connection_details = "Project by wbfoss - West Bengal Free and Open Source Software community"
