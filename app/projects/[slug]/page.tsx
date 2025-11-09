@@ -159,7 +159,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-center md:text-left">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                &copy; 2025 FOSSRadar.in. Open source directory.
+                &copy; 2025{" "}
+                <Link
+                  href="/"
+                  className="text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  FOSSRadar.in
+                </Link>
+                . Open source directory.
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
                 An initiative by{" "}
