@@ -5,7 +5,7 @@ import { ContributorAvatars } from "./ContributorAvatars";
 import { InstallationGuide } from "./InstallationGuide";
 import { DocumentationLinks } from "./DocumentationLinks";
 import { SimilarProjects } from "./SimilarProjects";
-import { PageViewsCard } from "./PageViewsCard";
+import { PageViewsStat } from "./PageViewsStat";
 import { ExternalLink, Github, Star, GitBranch, Calendar, Scale, GitFork, Eye, AlertCircle, Clock, Code2, FileText } from "lucide-react";
 import { formatNumber, formatRelativeTime } from "@/lib/utils";
 import Link from "next/link";
@@ -102,12 +102,11 @@ export function ProjectDetail({ project, cache, similarProjects }: ProjectDetail
           Repository Stats
         </h2>
 
-        {/* Page Views - Featured */}
-        <div className="mb-4">
-          <PageViewsCard slug={project.slug} />
-        </div>
-
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Page Views */}
+          <PageViewsStat slug={project.slug} />
+
+          {/* Stars */}
           <div className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
             <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mb-1">
               <Star className="h-4 w-4" />
