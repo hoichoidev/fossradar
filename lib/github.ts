@@ -144,6 +144,189 @@ export async function countGoodFirstIssues(repoUrl: string): Promise<number> {
 }
 
 /**
+ * Get top contributors for a repository
+ */
+export async function getContributors(repoUrl: string, limit: number = 10) {
+  try {
+    const url = new URL(repoUrl);
+    const [owner, repo] = url.pathname.replace(/^\/+/, "").replace(/\/+$/, "").split("/");
+
+    if (!owner || !repo) {
+      return [];
+    }
+
+    const { data } = await octokit.rest.repos.listContributors({
+      owner,
+      repo,
+      per_page: limit,
+    });
+
+    return data.map((contributor) => ({
+      login: contributor.login || "anonymous",
+      avatar_url: contributor.avatar_url,
+      html_url: contributor.html_url,
+      contributions: contributor.contributions,
+    }));
+  } catch (error) {
+    console.error("Error fetching contributors:", error);
+    return [];
+  }
+}
+
+/**
+ * Detect package manager and installation command from repo
+ */
+export async function detectInstallation(repoUrl: string): Promise<{
+  type: string;
+  command: string;
+} | null> {
+  try {
+    const url = new URL(repoUrl);
+    const [owner, repo] = url.pathname.replace(/^\/+/, "").replace(/\/+$/, "").split("/");
+
+    if (!owner || !repo) {
+      return null;
+    }
+
+    // Check for package files
+    const { data: contents } = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: "",
+    });
+
+    if (!Array.isArray(contents)) {
+      return null;
+    }
+
+    const files = contents.map((item) => item.name);
+
+    // Check for npm
+    if (files.includes("package.json")) {
+      // Try to get package name from package.json
+      try {
+        const { data: pkgFile } = await octokit.rest.repos.getContent({
+          owner,
+          repo,
+          path: "package.json",
+        });
+        if ("content" in pkgFile) {
+          const pkgJson = JSON.parse(Buffer.from(pkgFile.content, "base64").toString());
+          if (pkgJson.name) {
+            return {
+              type: "npm",
+              command: `npm install ${pkgJson.name}`,
+            };
+          }
+        }
+      } catch {
+        // Fallback to git clone
+      }
+    }
+
+    // Check for Python
+    if (files.includes("setup.py") || files.includes("pyproject.toml") || files.includes("requirements.txt")) {
+      try {
+        const { data: setupFile } = await octokit.rest.repos.getContent({
+          owner,
+          repo,
+          path: files.includes("setup.py") ? "setup.py" : "pyproject.toml",
+        });
+        // For simplicity, just suggest pip install if we detect Python project
+        return {
+          type: "pip",
+          command: `pip install ${repo}`,
+        };
+      } catch {
+        // Fallback
+      }
+    }
+
+    // Check for Rust
+    if (files.includes("Cargo.toml")) {
+      return {
+        type: "cargo",
+        command: `cargo install ${repo}`,
+      };
+    }
+
+    // Check for Go
+    if (files.includes("go.mod")) {
+      return {
+        type: "go",
+        command: `go install github.com/${owner}/${repo}@latest`,
+      };
+    }
+
+    // Default to git clone
+    return {
+      type: "git",
+      command: `git clone ${repoUrl}`,
+    };
+  } catch (error) {
+    console.error("Error detecting installation:", error);
+    // Fallback to git clone
+    return {
+      type: "git",
+      command: `git clone ${repoUrl}`,
+    };
+  }
+}
+
+/**
+ * Check for common documentation URLs
+ */
+export async function findDocumentation(repoUrl: string): Promise<{
+  docs_url?: string;
+  changelog_url?: string;
+}> {
+  try {
+    const url = new URL(repoUrl);
+    const [owner, repo] = url.pathname.replace(/^\/+/, "").replace(/\/+$/, "").split("/");
+
+    if (!owner || !repo) {
+      return {};
+    }
+
+    const result: { docs_url?: string; changelog_url?: string } = {};
+
+    // Check for common doc directories
+    const { data: contents } = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: "",
+    });
+
+    if (!Array.isArray(contents)) {
+      return result;
+    }
+
+    const files = contents.map((item) => ({ name: item.name, type: item.type }));
+
+    // Check for docs directory
+    const docsDir = files.find((f) =>
+      f.type === "dir" && (f.name.toLowerCase() === "docs" || f.name.toLowerCase() === "documentation")
+    );
+    if (docsDir) {
+      result.docs_url = `${repoUrl}/tree/main/${docsDir.name}`;
+    }
+
+    // Check for CHANGELOG
+    const changelog = files.find((f) =>
+      f.type === "file" && /^changelog/i.test(f.name)
+    );
+    if (changelog) {
+      result.changelog_url = `${repoUrl}/blob/main/${changelog.name}`;
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Error finding documentation:", error);
+    return {};
+  }
+}
+
+/**
  * Create a new branch, file, and pull request
  */
 export async function createProjectPR(params: {

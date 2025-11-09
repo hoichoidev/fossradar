@@ -1,15 +1,38 @@
 import { Project } from "@/lib/schema";
 import { VerifiedPill } from "./VerifiedPill";
 import { InlineCopy } from "./InlineCopy";
+import { ContributorAvatars } from "./ContributorAvatars";
+import { InstallationGuide } from "./InstallationGuide";
+import { DocumentationLinks } from "./DocumentationLinks";
+import { SimilarProjects } from "./SimilarProjects";
 import { ExternalLink, Github, Star, GitBranch, Calendar, Scale } from "lucide-react";
 import { formatNumber, formatRelativeTime } from "@/lib/utils";
 import Link from "next/link";
 
-interface ProjectDetailProps {
-  project: Project;
+interface ProjectCache {
+  contributors: Array<{
+    login: string;
+    avatar_url: string;
+    html_url: string;
+    contributions: number;
+  }>;
+  installation?: {
+    type: string;
+    command: string;
+  };
+  documentation: {
+    docs_url?: string;
+    changelog_url?: string;
+  };
 }
 
-export function ProjectDetail({ project }: ProjectDetailProps) {
+interface ProjectDetailProps {
+  project: Project;
+  cache?: ProjectCache;
+  similarProjects?: Project[];
+}
+
+export function ProjectDetail({ project, cache, similarProjects }: ProjectDetailProps) {
   const badgeMarkdown = `[![fossradar.in: Verified](https://img.shields.io/badge/fossradar.in-Verified-brightgreen?style=for-the-badge)](https://fossradar.in/projects/${project.slug})`;
 
   return (
@@ -99,6 +122,17 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         </div>
       </div>
 
+      {/* Contributors */}
+      {cache?.contributors && cache.contributors.length > 0 && (
+        <ContributorAvatars contributors={cache.contributors} />
+      )}
+
+      {/* Installation Guide */}
+      <InstallationGuide installation={cache?.installation} repoUrl={project.repo} />
+
+      {/* Documentation Links */}
+      <DocumentationLinks repoUrl={project.repo} documentation={cache?.documentation} />
+
       {/* Tags */}
       <div className="mb-8">
         <h2 className="text-base font-heading font-normal text-gray-700 dark:text-gray-300 tracking-wider mb-3">
@@ -132,6 +166,11 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Similar Projects */}
+      {similarProjects && similarProjects.length > 0 && (
+        <SimilarProjects projects={similarProjects} />
       )}
 
       {/* Badge */}

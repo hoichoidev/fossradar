@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation";
 import { loadAllProjects, getProjectBySlug } from "@/lib/projects";
+import { findSimilarProjects } from "@/lib/similar";
 import { ProjectDetail } from "@/components/ProjectDetail";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
+import fs from "fs";
+import path from "path";
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
@@ -89,6 +92,22 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
+  // Load cache data
+  let cache;
+  try {
+    const cachePath = path.join(process.cwd(), "public", "cache", `${slug}.json`);
+    if (fs.existsSync(cachePath)) {
+      const cacheData = fs.readFileSync(cachePath, "utf-8");
+      cache = JSON.parse(cacheData);
+    }
+  } catch (error) {
+    console.error("Error loading cache:", error);
+  }
+
+  // Find similar projects
+  const allProjects = loadAllProjects();
+  const similarProjects = findSimilarProjects(project, allProjects, 4);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black">
       {/* Header */}
@@ -109,7 +128,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
-        <ProjectDetail project={project} />
+        <ProjectDetail project={project} cache={cache} similarProjects={similarProjects} />
       </main>
 
       {/* JSON-LD Structured Data */}
