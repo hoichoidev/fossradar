@@ -1,6 +1,6 @@
 import { loadAllProjects } from "@/lib/projects";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Github, MapPin, Package } from "lucide-react";
+import { Github, MapPin, Package, TrendingUp, Building2, Star, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 export const revalidate = 3600; // Revalidate every hour
@@ -42,6 +42,8 @@ export default function RadarPage() {
   const totalProjects = projects.length;
   const totalStates = sortedStates.length;
   const totalCities = new Set(projects.map(p => `${p.location_city}, ${p.location_indian_state}`)).size;
+  const totalStars = projects.reduce((sum, p) => sum + (p.stars || 0), 0);
+  const verifiedProjects = projects.filter(p => p.verified).length;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black">
@@ -66,119 +68,213 @@ export default function RadarPage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
-        {/* Stats Overview */}
+        {/* Hero Section */}
         <div className="mb-12">
-          <h1 className="text-5xl font-heading font-normal text-gray-900 dark:text-gray-100 mb-4 tracking-wide">
-            Project Radar
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
-            Explore open source projects across India by state and city
-          </p>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-5xl font-heading font-normal text-gray-900 dark:text-gray-100 mb-3 tracking-wide">
+                Geographic Radar
+              </h1>
+              <p className="text-lg text-gray-600 dark:text-gray-400">
+                Real-time analytics of India&apos;s open source landscape
+              </p>
+            </div>
+            <Link
+              href="/"
+              className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium transition-all hover:scale-105"
+            >
+              <Package className="h-4 w-4" />
+              All Projects
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <Package className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Projects</p>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+            {/* Total Projects */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-default">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <Package className="h-5 w-5 opacity-90" />
+                  <p className="text-sm font-medium opacity-90">Projects</p>
+                </div>
+                <p className="text-4xl font-bold mb-1">{totalProjects}</p>
+                <p className="text-xs opacity-75">Total repositories</p>
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{totalProjects}</p>
             </div>
 
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <MapPin className="h-5 w-5 text-green-600 dark:text-green-400" />
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">States</p>
+            {/* Total Stars */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-default">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <Star className="h-5 w-5 opacity-90" />
+                  <p className="text-sm font-medium opacity-90">Stars</p>
+                </div>
+                <p className="text-4xl font-bold mb-1">{totalStars}</p>
+                <p className="text-xs opacity-75">GitHub stars earned</p>
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{totalStates}</p>
             </div>
 
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <MapPin className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Cities</p>
+            {/* States */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-green-500 to-emerald-600 dark:from-green-600 dark:to-emerald-700 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-default">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <MapPin className="h-5 w-5 opacity-90" />
+                  <p className="text-sm font-medium opacity-90">States</p>
+                </div>
+                <p className="text-4xl font-bold mb-1">{totalStates}</p>
+                <p className="text-xs opacity-75">Across India</p>
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{totalCities}</p>
+            </div>
+
+            {/* Cities */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 to-violet-600 dark:from-purple-600 dark:to-violet-700 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-default">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <Building2 className="h-5 w-5 opacity-90" />
+                  <p className="text-sm font-medium opacity-90">Cities</p>
+                </div>
+                <p className="text-4xl font-bold mb-1">{totalCities}</p>
+                <p className="text-xs opacity-75">Urban centers</p>
+              </div>
+            </div>
+
+            {/* Verified */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-cyan-500 to-blue-600 dark:from-cyan-600 dark:to-blue-700 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-default">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="h-5 w-5 opacity-90" />
+                  <p className="text-sm font-medium opacity-90">Verified</p>
+                </div>
+                <p className="text-4xl font-bold mb-1">{verifiedProjects}</p>
+                <p className="text-xs opacity-75">{Math.round((verifiedProjects/totalProjects)*100)}% of total</p>
+              </div>
             </div>
           </div>
         </div>
 
         {/* State-wise Breakdown */}
-        <div className="space-y-6">
-          <h2 className="text-3xl font-heading font-normal text-gray-900 dark:text-gray-100 tracking-wide">
-            Projects by State
-          </h2>
+        <div className="space-y-5">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-3xl font-heading font-normal text-gray-900 dark:text-gray-100 tracking-wide">
+                State Distribution
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Project density across Indian states and cities
+              </p>
+            </div>
+          </div>
 
-          {sortedStates.map(([state, data]) => {
+          {sortedStates.map(([state, data], index) => {
             const sortedCities = Object.entries(data.cities)
               .sort(([, a], [, b]) => b.count - a.count);
 
             const maxCount = Math.max(...sortedCities.map(([, c]) => c.count));
+            const statePercentage = Math.round((data.count / totalProjects) * 100);
 
             return (
               <div
                 key={state}
-                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6"
+                className="group relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:shadow-xl transition-all duration-300 hover:border-blue-300 dark:hover:border-blue-700"
               >
+                {/* State Header */}
                 <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h3 className="text-2xl font-heading font-normal text-gray-900 dark:text-gray-100 tracking-wide">
-                      {state}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      {data.count} {data.count === 1 ? 'project' : 'projects'} across {sortedCities.length} {sortedCities.length === 1 ? 'city' : 'cities'}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-lg">
+                      #{index + 1}
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-heading font-normal text-gray-900 dark:text-gray-100 tracking-wide">
+                        {state}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                        {data.count} {data.count === 1 ? 'project' : 'projects'} · {sortedCities.length} {sortedCities.length === 1 ? 'city' : 'cities'} · {statePercentage}% of total
+                      </p>
+                    </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                      {data.count}
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                      <Package className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                      <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                        {data.count}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Cities within this state */}
-                <div className="space-y-3">
-                  <h4 className="text-base font-heading font-normal text-gray-700 dark:text-gray-300 tracking-wider">
-                    Cities
-                  </h4>
+                {/* Cities Grid */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 pb-2 border-b border-gray-200 dark:border-gray-800">
+                    <Building2 className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 tracking-wider uppercase">
+                      Cities
+                    </h4>
+                  </div>
+
                   {sortedCities.map(([city, cityData]) => {
                     const percentage = (cityData.count / maxCount) * 100;
+                    const cityPercentage = Math.round((cityData.count / data.count) * 100);
 
                     return (
-                      <div key={city} className="space-y-2">
+                      <div key={city} className="space-y-3">
+                        {/* City Header with Progress */}
                         <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <MapPin className="h-4 w-4 text-gray-400" />
-                              <span className="font-medium text-gray-900 dark:text-gray-100">
-                                {city}
-                              </span>
-                              <span className="text-sm text-gray-500 dark:text-gray-500">
-                                {cityData.count} {cityData.count === 1 ? 'project' : 'projects'}
-                              </span>
+                          <div className="flex items-center gap-3 flex-1">
+                            <MapPin className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                            <div className="flex-1">
+                              <div className="flex items-baseline gap-2">
+                                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                                  {city}
+                                </span>
+                                <span className="text-xs text-gray-500 dark:text-gray-500">
+                                  {cityData.count} {cityData.count === 1 ? 'project' : 'projects'} · {cityPercentage}%
+                                </span>
+                              </div>
+                              {/* Progress Bar */}
+                              <div className="mt-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                                <div
+                                  className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 h-1.5 rounded-full transition-all duration-700 ease-out"
+                                  style={{ width: `${percentage}%` }}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
 
-                        {/* Visual bar */}
-                        <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2">
-                          <div
-                            className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500"
-                            style={{ width: `${percentage}%` }}
-                          />
-                        </div>
-
-                        {/* Project list */}
-                        <div className="pl-6 space-y-1">
+                        {/* Project List */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pl-7">
                           {cityData.projects.map((project) => (
                             <Link
                               key={project.slug}
                               href={`/projects/${project.slug}`}
-                              className="block text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                              className="group/project flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 border border-transparent hover:border-blue-200 dark:hover:border-blue-800 transition-all"
                             >
-                              → {project.name}
-                              {project.verified && (
-                                <span className="ml-2 text-xs text-green-600 dark:text-green-400">✓</span>
-                              )}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate group-hover/project:text-blue-600 dark:group-hover/project:text-blue-400 transition-colors">
+                                  {project.name}
+                                </p>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  {project.verified && (
+                                    <span className="inline-flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
+                                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                      Verified
+                                    </span>
+                                  )}
+                                  {project.stars > 0 && (
+                                    <span className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                                      <Star className="h-3 w-3" />
+                                      {project.stars}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <ArrowUpRight className="h-4 w-4 text-gray-400 group-hover/project:text-blue-600 dark:group-hover/project:text-blue-400 transition-colors flex-shrink-0" />
                             </Link>
                           ))}
                         </div>
@@ -191,12 +287,13 @@ export default function RadarPage() {
           })}
         </div>
 
-        {/* Back to home */}
-        <div className="mt-12 text-center">
+        {/* Back to home - Mobile only */}
+        <div className="mt-12 text-center md:hidden">
           <Link
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors"
           >
+            <Package className="h-4 w-4" />
             Back to Projects
           </Link>
         </div>
